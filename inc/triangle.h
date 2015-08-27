@@ -17,6 +17,11 @@ public:
     ~Triangle();
 
     virtual void Draw() override;
+
+    static Shape * create()
+    {
+        return new Triangle;
+    }
 };
 
 #endif /* INC_TRIANGLE_H_ */

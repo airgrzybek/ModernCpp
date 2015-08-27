@@ -17,6 +17,11 @@ public:
     virtual ~Square();
 
     void Draw() override;
+
+    static Shape * create()
+    {
+        return new Square;
+    }
 };
 
 #endif /* INC_SQUARE_H_ */
