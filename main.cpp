@@ -9,11 +9,13 @@
 #include <iostream>
 #include <memory>
 #include "triangle.h"
-
+#include "square.h"
+#include "AbstractFactory.h"
 
 int main()
 {
-    std::auto_ptr<Shape> shape(new Triangle);
+    typedef Shape* (*CreateShapeCallback)();
+    AbstractFactory<Shape,int,CreateShapeCallback> factory;
 
     return 0;
 }

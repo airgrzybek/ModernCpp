@@ -13,7 +13,7 @@ class Shape
 {
 public:
     virtual ~Shape(){};
-    virtual void Draw() = 0;
+    virtual void Draw(){};
 };
 
 
