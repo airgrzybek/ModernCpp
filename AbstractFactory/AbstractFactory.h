@@ -22,6 +22,7 @@ public:
     {
         std::cout << "Abstract Factory ctor" << std::endl;
     }
+
     virtual ~AbstractFactory()
     {
         std::cout << "Abstract Factory dtor" << std::endl;
@@ -51,7 +52,7 @@ public:
     }
 
 private:
-    typedef std::map<IdentifierType, AbstractProduct> AssocMap;
+    typedef std::map<IdentifierType, ProductCreator> AssocMap;
     AssocMap associations_;
 };
 
