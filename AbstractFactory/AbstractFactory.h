@@ -71,10 +71,14 @@ public:
 
 private:
     AbstractFactory()
-    {}
+    {
+        std::cout << "AbstractFactory ctor" << std::endl;
+    }
 
     virtual ~AbstractFactory()
-    {}
+    {
+        std::cout << "AbstractFactory dtor" << std::endl;
+    }
 
     AbstractFactory(const AbstractFactory & lhs) = delete;
     AbstractFactory & operator=(const AbstractFactory & lhs) = delete;
@@ -87,6 +91,7 @@ private:
     AssocMap associations_;
 };
 
-
+typedef Shape* (*CreateShapeCallback)();
+typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>> SingleFactory;
 
 #endif /* ABSTRACTFACTORY_ABSTRACTFACTORY_H_ */
