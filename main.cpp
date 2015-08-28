@@ -22,8 +22,8 @@ int main()
     factory.registerObject(0,&Triangle::create);
     factory.registerObject(1,&Square::create);
 
-    std::auto_ptr<Shape> triangle(factory.createObject(0));
-    std::auto_ptr<Shape> square(factory.createObject(1));
+    unique_ptr<Shape> triangle(factory.createObject(0));
+    unique_ptr<Shape> square(factory.createObject(1));
 
     return 0;
 }
