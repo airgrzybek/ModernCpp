@@ -26,6 +26,22 @@ public:
 };
 
 template<class T>
+class CreateStatic
+{
+public:
+    static T * create()
+    {
+        static T instance;
+        return &instance;
+    }
+
+    static void destroy(T * ptr)
+    {
+        ptr->~T();
+    }
+};
+
+template<class T>
 class DefaultLifetime
 {
 public:

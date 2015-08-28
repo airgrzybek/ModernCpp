@@ -85,6 +85,8 @@ private:
 
     template<typename T>
     friend class CreateUsingNew;
+    template<typename T>
+    friend class CreateStatic;
 
     typedef std::map<IdentifierType, ProductCreator> AssocMap;
     typedef std::pair<IdentifierType,ProductCreator> AssocItem;
@@ -92,6 +94,6 @@ private:
 };
 
 typedef Shape* (*CreateShapeCallback)();
-typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>> SingleFactory;
+typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>,CreateStatic> SingleFactory;
 
 #endif /* ABSTRACTFACTORY_ABSTRACTFACTORY_H_ */
