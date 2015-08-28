@@ -30,13 +30,20 @@ class DefaultLifetime
 {
 public:
     typedef void (*pDestructionFunction)();
-    void ScheduleDestruction(pDestructionFunction);
-    void OnDeadReference();
+    static void ScheduleDestruction(pDestructionFunction){}
+    static void OnDeadReference(){}
 };
 
 template<class T> class SingleThreaded
 {
 public:
+    class Lock
+    {
+    public:
+        Lock(){}
+        ~Lock(){}
+    };
+
     typedef T VolatileType;
 };
 
@@ -46,33 +53,10 @@ template<class T, template<class > class CreationPolicy = CreateUsingNew,
 class SingletonHolder
 {
 public:
-    static T& getInstance()
-    {
-        if (!instance)
-        {
-            typename ThreadingModel<T>::Lock guard;
-            if (!instance)
-            {
-                if (destroyed)
-                {
-                    LifetimePolicy<T>::OnDeadReference();
-                    destroyed = false;
-                }
-                instance = CreationPolicy<T>::Create();
-                LifetimePolicy<T>::ScheduleCall(&destroySingleton);
-            }
-        }
-        return *instance;
-    }
+    static T & getInstance();
 private:
 // Helpers
-    static void destroySingleton()
-    {
-        assert(!destroyed);
-        CreationPolicy<T>::Destroy(instance);
-        instance = 0;
-        destroyed = true;
-    }
+    static void destroySingleton();
 // Protection
     SingletonHolder();
 // Data
@@ -80,6 +64,5 @@ private:
     static InstanceType* instance;
     static bool destroyed;
 };
-
 
 #endif /* SINGLETON_SINGLETONHOLDER_H_ */

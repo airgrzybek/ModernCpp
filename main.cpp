@@ -8,23 +8,23 @@
 
 #include <iostream>
 #include <memory>
-#include "triangle.h"
-#include "square.h"
-#include "AbstractFactory.h"
-#include "SingletonHolder.h"
+#include <triangle.h>
+#include <square.h>
+#include <AbstractFactory.h>
+#include <SingletonHolder.h>
 
 using namespace std;
 
 int main()
 {
-    AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError> factory;
+    typedef Shape* (*CreateShapeCallback)();
+    typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>> SingleFactory;
 
+    SingleFactory::getInstance().registerObject(ShapeId::triangle,&Triangle::create);
+    //SingleFactory::getInstance().registerObject(ShapeId::square,&Square::create);
 
-    factory.registerObject(ShapeId::triangle,&Triangle::create);
-    factory.registerObject(ShapeId::square,&Square::create);
-
-    unique_ptr<Shape> triangle(factory.createObject(ShapeId::triangle));
-    unique_ptr<Shape> square(factory.createObject(ShapeId::square));
+    //unique_ptr<Shape> triangle(SingleFactory::getInstance().createObject(ShapeId::triangle));
+    //unique_ptr<Shape> square(SingleFactory::getInstance().createObject(ShapeId::square));
 
     return 0;
 }

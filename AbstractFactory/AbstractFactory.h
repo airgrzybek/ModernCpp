@@ -49,12 +49,6 @@ template<
 class AbstractFactory: public FactoryErrorPolicy<IdentifierType,AbstractProduct>
 {
 public:
-    AbstractFactory()
-    {}
-
-    virtual ~AbstractFactory()
-    {}
-
     bool registerObject(const IdentifierType& id, ProductCreator creator)
     {
         return associations_.insert(AssocItem(id, creator)).second;
@@ -76,12 +70,23 @@ public:
     }
 
 private:
+    AbstractFactory()
+    {}
+
+    virtual ~AbstractFactory()
+    {}
+
+    AbstractFactory(const AbstractFactory & lhs) = delete;
+    AbstractFactory & operator=(const AbstractFactory & lhs) = delete;
+
+    template<typename T>
+    friend class CreateUsingNew;
+
     typedef std::map<IdentifierType, ProductCreator> AssocMap;
     typedef std::pair<IdentifierType,ProductCreator> AssocItem;
     AssocMap associations_;
 };
 
-typedef Shape* (*CreateShapeCallback)();
-typedef SingletonHolder<AbstractFactory<Shape,int,CreateShapeCallback,DefaultFactoryError>> singleFactory;
+
 
 #endif /* ABSTRACTFACTORY_ABSTRACTFACTORY_H_ */
