@@ -9,7 +9,6 @@
 #define ABSTRACTFACTORY_ABSTRACTFACTORY_H_
 
 #include<map>
-#include<iostream>
 
 template<class IdentifierType, class ProductType>
 class DefaultFactoryError
@@ -49,14 +48,10 @@ class AbstractFactory: public FactoryErrorPolicy<IdentifierType,AbstractProduct>
 {
 public:
     AbstractFactory()
-    {
-        std::cout << "Abstract Factory ctor" << std::endl;
-    }
+    {}
 
     virtual ~AbstractFactory()
-    {
-        std::cout << "Abstract Factory dtor" << std::endl;
-    }
+    {}
 
     bool registerObject(const IdentifierType& id, ProductCreator creator)
     {
