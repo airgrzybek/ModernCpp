@@ -17,13 +17,13 @@ using namespace std;
 int main()
 {
     typedef Shape* (*CreateShapeCallback)();
-    AbstractFactory<Shape,int,CreateShapeCallback,DefaultFactoryError> factory;
+    AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError> factory;
 
-    factory.registerObject(0,&Triangle::create);
-    factory.registerObject(1,&Square::create);
+    factory.registerObject(ShapeId::triangle,&Triangle::create);
+    factory.registerObject(ShapeId::square,&Square::create);
 
-    unique_ptr<Shape> triangle(factory.createObject(0));
-    unique_ptr<Shape> square(factory.createObject(1));
+    unique_ptr<Shape> triangle(factory.createObject(ShapeId::triangle));
+    unique_ptr<Shape> square(factory.createObject(ShapeId::square));
 
     return 0;
 }

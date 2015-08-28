@@ -9,6 +9,12 @@
 #define INC_SHAPE_H_
 
 
+enum class ShapeId
+{
+    triangle,
+    square
+};
+
 class Shape
 {
 public:
