@@ -11,11 +11,41 @@
 #include<map>
 #include<iostream>
 
+template<class IdentifierType, class ProductType>
+class DefaultFactoryError
+{
+public:
+    class Exception : public std::exception
+    {
+    public:
+        Exception(const IdentifierType& unknownId)
+        : unknownId_(unknownId)
+        {
+        }
+        virtual const char* what()
+        {
+            return "Unknown object type passed to Factory.";
+        }
+        const IdentifierType GetId()
+        {
+            return unknownId_;
+        };
+    private:
+        IdentifierType unknownId_;
+    };
+protected:
+    ProductType * onUnknownType(const IdentifierType& id)
+    {
+        throw Exception(id);
+    }
+};
+
 template<
     class AbstractProduct,
     typename IdentifierType,
-    typename ProductCreator>
-class AbstractFactory
+    typename ProductCreator,
+    template<typename,class> class FactoryErrorPolicy>
+class AbstractFactory: public FactoryErrorPolicy<IdentifierType,AbstractProduct>
 {
 public:
     AbstractFactory()
@@ -45,11 +75,7 @@ public:
         {
             return (i->second)();
         }
-        else
-        {
-            std::cout << "No identifier found return null" << std::endl;
-            return nullptr;
-        }
+        return this->onUnknownType(id);
     }
 
 private:
