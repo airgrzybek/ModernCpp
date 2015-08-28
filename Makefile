@@ -1,6 +1,6 @@
 
 
-INC=-I ./inc -I ./AbstractFactory
+INC=-I ./inc -I ./AbstractFactory -I ./Singleton
 SRC=$(wildcard src/*.cpp)
 SRC+=$(wildcard src/*.c)
 SRC+=main.cpp
