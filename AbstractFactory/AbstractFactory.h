@@ -28,16 +28,17 @@ public:
         std::cout << "Abstract Factory dtor" << std::endl;
     }
 
-    bool Register(const IdentifierType& id, ProductCreator creator)
+    bool registerObject(const IdentifierType& id, ProductCreator creator)
     {
-        return associations_.insert(AssocMap::value_type(id, creator)).second;
+        return associations_.insert(AssocItem(id, creator)).second;
     }
-    bool Unregister(const IdentifierType& id)
+
+    bool unregisterObject(const IdentifierType& id)
     {
         return associations_.erase(id) == 1;
     }
 
-    AbstractProduct* CreateObject(const IdentifierType& id)
+    AbstractProduct* createObject(const IdentifierType& id)
     {
         typename AssocMap::const_iterator i = associations_.find(id);
         if (i != associations_.end())
@@ -53,6 +54,7 @@ public:
 
 private:
     typedef std::map<IdentifierType, ProductCreator> AssocMap;
+    typedef std::pair<IdentifierType,ProductCreator> AssocItem;
     AssocMap associations_;
 };
 
