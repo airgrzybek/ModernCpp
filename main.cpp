@@ -18,8 +18,8 @@ using namespace std;
 int main()
 {
     //SingleFactory::getInstance();
-    SingleFactory::getInstance().registerObject(ShapeId::triangle,&Triangle::create);
-    SingleFactory::getInstance().registerObject(ShapeId::square,&Square::create);
+
+
 
     unique_ptr<Shape> triangle(SingleFactory::getInstance().createObject(ShapeId::triangle));
     unique_ptr<Shape> square(SingleFactory::getInstance().createObject(ShapeId::square));

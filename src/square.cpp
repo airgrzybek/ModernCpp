@@ -10,6 +10,11 @@
 
 using namespace std;
 
+namespace
+{
+const bool created = SingleFactory::getInstance().registerObject(ShapeId::square,&Square::create);
+}
+
 Square::Square()
 {
     // TODO Auto-generated constructor stub

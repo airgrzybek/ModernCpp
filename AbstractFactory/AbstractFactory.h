@@ -10,7 +10,7 @@
 
 #include<map>
 #include<iostream>
-#include<SingletonHolder.h>
+
 
 template<class IdentifierType, class ProductType>
 class DefaultFactoryError
@@ -92,8 +92,5 @@ private:
     typedef std::pair<IdentifierType,ProductCreator> AssocItem;
     AssocMap associations_;
 };
-
-typedef Shape* (*CreateShapeCallback)();
-typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>,CreateStatic> SingleFactory;
 
 #endif /* ABSTRACTFACTORY_ABSTRACTFACTORY_H_ */

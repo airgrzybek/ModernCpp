@@ -8,6 +8,11 @@
 #include "triangle.h"
 #include <iostream>
 
+namespace
+{
+const bool created = SingleFactory::getInstance().registerObject(ShapeId::triangle,&Triangle::create);
+}
+
 Triangle::Triangle() : Shape()
 {
     std::cout << "Triangle ctor" << std::endl;

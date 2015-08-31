@@ -8,6 +8,8 @@
 #ifndef INC_SHAPE_H_
 #define INC_SHAPE_H_
 
+#include<SingletonHolder.h>
+#include<AbstractFactory.h>
 
 enum class ShapeId
 {
@@ -22,5 +24,7 @@ public:
     virtual void Draw() = 0;
 };
 
+typedef Shape* (*CreateShapeCallback)();
+typedef SingletonHolder<AbstractFactory<Shape,ShapeId,CreateShapeCallback,DefaultFactoryError>,CreateStatic> SingleFactory;
 
 #endif /* INC_SHAPE_H_ */
