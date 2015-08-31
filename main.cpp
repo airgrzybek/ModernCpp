@@ -17,10 +17,6 @@ using namespace std;
 
 int main()
 {
-    //SingleFactory::getInstance();
-
-
-
     unique_ptr<Shape> triangle(SingleFactory::getInstance().createObject(ShapeId::triangle));
     unique_ptr<Shape> square(SingleFactory::getInstance().createObject(ShapeId::square));
 
