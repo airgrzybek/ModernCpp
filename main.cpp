@@ -8,10 +8,7 @@
 
 #include <iostream>
 #include <memory>
-#include <triangle.h>
-#include <square.h>
-#include <AbstractFactory.h>
-//#include <SingletonHolder.h>
+#include <shape.h>
 
 using namespace std;
 
