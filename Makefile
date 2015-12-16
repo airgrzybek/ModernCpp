@@ -4,11 +4,13 @@ INC= \
 	-I ./inc \
 	-I ./AbstractFactory \
 	-I ./Singleton \
+	-I ./SmallObjectAllocation \
 	
 	
 SRC=$(wildcard src/*.cpp)
 SRC+=$(wildcard src/*.c)
 SRC+=$(wildcard Singleton/*.cpp)
+SRC+=$(wildcard SmallObjectAllocation/*.cpp)
 SRC+=main.cpp
 
 OBJS=$(SRC:.cpp=.o)
