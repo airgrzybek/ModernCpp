@@ -33,12 +33,18 @@ FixedAllocator::FixedAllocator(std::size_t blockSize, std::size_t pageSize) :
                 deallocChunk(0),
                 emptyChunk(0)
 {
-    assert( blockSize > 0 );
-    assert( pageSize >= blockSize );
+    assert(blockSize > 0);
+    assert(pageSize >= blockSize);
 
     std::size_t numOfBlocks = pageSize / blockSize;
-    if ( numOfBlocks > MaxObjectsPerChunk ) numOfBlocks = MaxObjectsPerChunk;
-    else if ( numOfBlocks < MinObjectsPerChunk ) numOfBlocks = MinObjectsPerChunk;
+    if (numOfBlocks > MaxObjectsPerChunk)
+    {
+        numOfBlocks = MaxObjectsPerChunk;
+    }
+    else if (numOfBlocks < MinObjectsPerChunk)
+    {
+        numOfBlocks = MinObjectsPerChunk;
+    }
 
     numBlocks = static_cast<unsigned char>(numOfBlocks);
     assert(numBlocks == numOfBlocks);
@@ -46,18 +52,113 @@ FixedAllocator::FixedAllocator(std::size_t blockSize, std::size_t pageSize) :
 
 FixedAllocator::~FixedAllocator()
 {
-
+    for(auto iter : chunks)
+    {
+        iter.Release();
+    }
 }
 
 
 void* FixedAllocator::Allocate()
 {
-    return 0;
+    if(nullptr == allocChunk || allocChunk->IsFilled())
+    {
+        //check empty chunk
+        if(nullptr != emptyChunk)
+        {
+            allocChunk = emptyChunk;
+            emptyChunk = nullptr;
+        }
+        else
+        {
+            // check all chunks
+            for(auto iter(chunks.begin()), end(chunks.end()); ; ++iter)
+            {
+                if(end == iter)
+                {
+                    //make new chunk
+                    Chunk newChunk;
+                    newChunk.Init(blockSize,numBlocks);
+                    chunks.push_back(newChunk);
+                    allocChunk = &chunks.back();
+                    break;
+                }
+                else if(!iter->IsFilled())
+                {
+                    allocChunk = &(*iter);
+                    break;
+                }
+            }
+        }
+    }
+
+    assert(nullptr != allocChunk);
+    assert(!allocChunk->IsFilled());
+    return allocChunk->Allocate(blockSize);
 }
 
 bool FixedAllocator::Deallocate(void * p)
 {
-    return false;
+    assert(nullptr != deallocChunk);
+    assert(nullptr != p);
+
+    Chunk * deallocate = nullptr;
+    bool result = false;
+
+    if (!deallocChunk->HasBlock(p, blockSize))
+    {
+        //find chunk which contains address p
+        for (auto iter : chunks)
+        {
+            if (iter.HasBlock(p, blockSize))
+            {
+                deallocate = &iter;
+                break;
+            }
+        }
+    }
+    else
+    {
+        deallocate = deallocChunk;
+    }
+
+    if(nullptr != deallocate)
+    {
+        deallocate->Deallocate(p,blockSize);
+        result = true;
+
+        // set new dealloc chunk
+        deallocChunk = deallocate;
+
+        if(deallocChunk->HasAvailable(numBlocks))
+        {
+            if (nullptr != emptyChunk)
+            {
+                // If last Chunk is empty, just change what deallocChunk_
+                // points to, and release the last.  Otherwise, swap an empty
+                // Chunk with the last, and then release it.
+                Chunk * lastChunk = &chunks.back();
+                if (lastChunk == deallocChunk)
+                {
+                    deallocChunk = emptyChunk;
+                }
+                else if (lastChunk != emptyChunk)
+                {
+                    std::swap(*emptyChunk, *lastChunk);
+                }
+                assert(lastChunk->HasAvailable(numBlocks));
+                lastChunk->Release();
+                chunks.pop_back();
+                if ((allocChunk == lastChunk) || allocChunk->IsFilled())
+                {
+                    allocChunk = deallocChunk;
+                }
+            }
+            emptyChunk = deallocChunk;
+        }
+    }
+
+    return result;
 }
 
 std::size_t FixedAllocator::BlockSize() const
@@ -67,6 +168,16 @@ std::size_t FixedAllocator::BlockSize() const
 
 const Chunk * FixedAllocator::HasBlock(void * p) const
 {
+    const std::size_t chunkLength = numBlocks * blockSize;
+    for(auto iter(chunks.begin()), end(chunks.end()); iter != end; ++iter)
+    {
+        const Chunk & chunk = *iter;
+        if(chunk.HasBlock(p,chunkLength))
+        {
+            return &chunk;
+        }
+    }
+
     return 0;
 }
 
