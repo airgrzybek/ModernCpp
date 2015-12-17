@@ -20,7 +20,7 @@ void Chunk::Init(std::size_t blockSize, unsigned char blocks)
     unsigned char* p = pData;
     for (; i != blocks; p += blockSize)
     {
-    *p = ++i;
+        *p = ++i;
     }
 }
 
