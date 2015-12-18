@@ -81,6 +81,7 @@ void* FixedAllocator::Allocate()
                     newChunk.Init(blockSize,numBlocks);
                     chunks.push_back(newChunk);
                     allocChunk = &chunks.back();
+                    deallocChunk = &chunks.front();
                     break;
                 }
                 else if(!iter->IsFilled())
