@@ -26,7 +26,9 @@ namespace Memory
         inline bool HasBlock( void * p, std::size_t chunkLength ) const
         {
             unsigned char * pc = static_cast< unsigned char * >( p );
-            return ( pData <= pc ) && ( pc < pData + chunkLength );
+            bool top = ( pc < (pData + chunkLength));
+            bool low = ( pData <= pc );
+            return low && top;
         }
 
         inline bool HasAvailable( unsigned char numBlocks ) const

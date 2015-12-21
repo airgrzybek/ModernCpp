@@ -105,13 +105,15 @@ bool FixedAllocator::Deallocate(void * p)
 
     Chunk * deallocate = nullptr;
     bool result = false;
+    const std::size_t chunkLength = numBlocks * blockSize;
 
-    if (!deallocChunk->HasBlock(p, blockSize))
+
+    if (!deallocChunk->HasBlock(p, chunkLength))
     {
         //find chunk which contains address p
         for (auto iter : chunks)
         {
-            if (iter.HasBlock(p, blockSize))
+            if (iter.HasBlock(p, chunkLength))
             {
                 deallocate = &iter;
                 break;

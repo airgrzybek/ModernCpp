@@ -19,7 +19,7 @@ OBJS=$(SRC:.cpp=.o)
 TARGET=UT.exe
 
 CC=g++
-CXXFLAGS=-ggdb -Wall -fmessage-length=0 $(INC) -std=gnu++11 -Werror -static-libgcc -static-libstdc++
+CXXFLAGS=-ggdb -Wall -fmessage-length=0 $(INC) -std=gnu++11 -static-libgcc -static-libstdc++
 LDFLAGS=-L $(GTEST_LIB_DIR)\lib -lgtest
 
 all: $(OBJS)

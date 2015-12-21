@@ -70,6 +70,48 @@ TEST_P(FixedAllocatorTest, Deallocate_Assertion2)
     EXPECT_TRUE(fixedAllocator.Deallocate(p));
 }
 
+TEST_P(FixedAllocatorTest, HasBlock_Failed)
+{
+    void * p = fixedAllocator.Allocate();
+    unsigned char * pc = static_cast<unsigned char *>(p);
+    pc = pc + (blockSize * 256);
+    EXPECT_FALSE(fixedAllocator.HasBlock(static_cast<void *>(pc)));
+}
+
+TEST_P(FixedAllocatorTest, HasBlock_Failed2)
+{
+    const unsigned int size = 257;
+    void * p[size] = {0};
+    for(unsigned int i = 0; i < size; ++i)
+    {
+        p[i] = fixedAllocator.Allocate();
+        printf(" p[%d] = %p\n",i, p[i]);
+        EXPECT_TRUE(p[i]);
+    }
+
+    //EXPECT_TRUE(fixedAllocator.HasBlock(static_cast<void *>(p[255])));
+    //EXPECT_TRUE(fixedAllocator.Deallocate(static_cast<void *>(p[255])));
+    EXPECT_TRUE(fixedAllocator.HasBlock(static_cast<void *>(p[256])));
+    EXPECT_TRUE(fixedAllocator.Deallocate(static_cast<void *>(p[256])));
+}
+
+/*TEST_P(FixedAllocatorTest, Allocate2Pages)
+{
+    const unsigned int size = 257;
+    void * p[size] = {0};
+    for(unsigned int i = 0; i < size; ++i)
+    {
+        p[i] = fixedAllocator.Allocate();
+        EXPECT_TRUE(p[i]);
+    }
+
+    for (unsigned int i = 0; i < size  ; ++i)
+    {
+        printf("dealloc p[%d] = %p\n",i,p[i]);
+        EXPECT_TRUE(fixedAllocator.Deallocate(p[i]));
+    }
+}*/
+
 INSTANTIATE_TEST_CASE_P(InstantiationName,
                         FixedAllocatorTest,
-                        ::testing::Values(1,2,4,9,48));
+                        ::testing::Values(4,2));

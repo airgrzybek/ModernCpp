@@ -7,13 +7,20 @@
 
 #include "Chunk.h"
 #include <cassert>
+#include <cstring>
 
 namespace Memory
 {
 
 void Chunk::Init(std::size_t blockSize, unsigned char blocks)
 {
+    assert(blockSize > 0);
+    assert(blocks > 0);
+    // Overflow check
+    assert((blockSize * blocks) / blockSize == blocks);
+
     pData = new unsigned char[blockSize * blocks];
+    memset(pData,0,blockSize * blocks);
     firstAvailableBlock = 0;
     blocksAvailable = blocks;
     unsigned char i = 0;
