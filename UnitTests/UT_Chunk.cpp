@@ -73,7 +73,11 @@ TEST_P(ChunkTestParam, Deallocate)
 TEST_P(ChunkTestParam, Deallocate_Death)
 {
     void * p = 0;
+#ifdef WINDOWS
     ASSERT_DEATH(chunk.Deallocate(p,blockSize),"Assertion failed: .*Chunk.cpp");
+#else
+    ASSERT_DEATH(chunk.Deallocate(p,blockSize),".*Chunk.cpp:119.*");
+#endif
 }
 
 TEST_P(ChunkTestParam, HasBlock)

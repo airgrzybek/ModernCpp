@@ -60,13 +60,21 @@ TEST_P(FixedAllocatorTest, Allocate)
 TEST_P(FixedAllocatorTest, Deallocate_Assertion1)
 {
     void * p = nullptr;
+#ifdef WINDOWS
     EXPECT_DEATH(fixedAllocator.Deallocate(p),"Assertion failed: .*FixedAllocator.cpp");
+#else
+    EXPECT_DEATH(fixedAllocator.Deallocate(p),".*FixedAllocator.cpp:103.*");
+#endif
 }
 
 TEST_P(FixedAllocatorTest, Deallocate_Assertion2)
 {
     void * p = fixedAllocator.Allocate();
+#ifdef WINDOWS
     EXPECT_DEATH(fixedAllocator.Deallocate(nullptr),"Assertion failed: .*FixedAllocator.cpp");
+#else
+    EXPECT_DEATH(fixedAllocator.Deallocate(nullptr),".*FixedAllocator.cpp:104.*");
+#endif
     EXPECT_TRUE(fixedAllocator.Deallocate(p));
 }
 
