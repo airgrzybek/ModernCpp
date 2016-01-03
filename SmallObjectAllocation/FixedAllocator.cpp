@@ -111,11 +111,11 @@ bool FixedAllocator::Deallocate(void * p)
     if (!deallocChunk->HasBlock(p, chunkLength))
     {
         //find chunk which contains address p
-        for (auto iter : chunks)
+        for (auto iter = chunks.begin(), end = chunks.end(); iter != end; ++iter)
         {
-            if (iter.HasBlock(p, chunkLength))
+            if (iter->HasBlock(p, chunkLength))
             {
-                deallocate = &iter;
+                deallocate = &(*iter);
                 break;
             }
         }

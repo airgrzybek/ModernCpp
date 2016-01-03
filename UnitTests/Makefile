@@ -19,8 +19,9 @@ OBJS=$(SRC:.cpp=.o)
 TARGET=UT
 
 CC=g++
-CXXFLAGS=-ggdb -Wall -fmessage-length=0 $(INC) -std=gnu++11 -static-libgcc -static-libstdc++
-LDFLAGS=-L $(GTEST_LIB_DIR)/build -lgtest -lpthread
+CXXFLAGS=-ggdb -Wall -fmessage-length=0 $(INC) -std=gnu++11 -static-libgcc -static-libstdc++ \
+			-fprofile-arcs -ftest-coverage 
+LDFLAGS=-L $(GTEST_LIB_DIR)/lib -lgtest -lpthread -fprofile-arcs
 
 all: $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
@@ -34,3 +35,5 @@ clean:
 memory_check: all
 	drmemory.exe $(TARGET) -show_reachable
 
+code_coverage: run
+	gcov ../SmallObjectAllocation/*

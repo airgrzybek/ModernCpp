@@ -10,7 +10,7 @@
 #include <vector>
 #include "FixedAllocator.h"
 
-const static std::size_t PAGE_SIZE = 4096;
+const static std::size_t PAGE_SIZE = 256;
 
 class FixedAllocatorTest : public testing::TestWithParam<std::size_t>
 {
@@ -63,7 +63,7 @@ TEST_P(FixedAllocatorTest, Deallocate_Assertion1)
 #ifdef WINDOWS
     EXPECT_DEATH(fixedAllocator.Deallocate(p),"Assertion failed: .*FixedAllocator.cpp");
 #else
-    EXPECT_DEATH(fixedAllocator.Deallocate(p),".*FixedAllocator.cpp:103.*");
+    EXPECT_DEATH(fixedAllocator.Deallocate(p),".*FixedAllocator.cpp:*");
 #endif
 }
 
@@ -73,7 +73,7 @@ TEST_P(FixedAllocatorTest, Deallocate_Assertion2)
 #ifdef WINDOWS
     EXPECT_DEATH(fixedAllocator.Deallocate(nullptr),"Assertion failed: .*FixedAllocator.cpp");
 #else
-    EXPECT_DEATH(fixedAllocator.Deallocate(nullptr),".*FixedAllocator.cpp:104.*");
+    EXPECT_DEATH(fixedAllocator.Deallocate(nullptr),".*FixedAllocator.cpp:*");
 #endif
     EXPECT_TRUE(fixedAllocator.Deallocate(p));
 }
@@ -93,20 +93,32 @@ TEST_P(FixedAllocatorTest, HasBlock_Failed2)
     for(unsigned int i = 0; i < size; ++i)
     {
         p[i] = fixedAllocator.Allocate();
-        printf(" p[%d] = %p\n",i, p[i]);
         EXPECT_TRUE(p[i]);
     }
 
-    //EXPECT_TRUE(fixedAllocator.HasBlock(static_cast<void *>(p[255])));
-    //EXPECT_TRUE(fixedAllocator.Deallocate(static_cast<void *>(p[255])));
     EXPECT_TRUE(fixedAllocator.HasBlock(static_cast<void *>(p[256])));
-    EXPECT_TRUE(fixedAllocator.Deallocate(static_cast<void *>(p[256])));
 }
 
-/*TEST_P(FixedAllocatorTest, Allocate2Pages)
+TEST_P(FixedAllocatorTest, Allocate8Chunks_ReverseDealloc)
 {
-    const unsigned int size = 257;
-    void * p[size] = {0};
+    std::size_t size = (PAGE_SIZE / blockSize)*8;
+    void * p[size];
+    for(unsigned int i = 0; i < size; ++i)
+    {
+        p[i] = fixedAllocator.Allocate();
+        EXPECT_TRUE(p[i]);
+    }
+
+    for (signed int i = size-1; i >= 0  ; --i)
+    {
+        EXPECT_TRUE(fixedAllocator.Deallocate(p[i]));
+    }
+}
+
+TEST_P(FixedAllocatorTest, Allocate8Chunks)
+{
+    std::size_t size = (PAGE_SIZE / blockSize)*8;
+    void * p[size];
     for(unsigned int i = 0; i < size; ++i)
     {
         p[i] = fixedAllocator.Allocate();
@@ -115,11 +127,52 @@ TEST_P(FixedAllocatorTest, HasBlock_Failed2)
 
     for (unsigned int i = 0; i < size  ; ++i)
     {
-        printf("dealloc p[%d] = %p\n",i,p[i]);
         EXPECT_TRUE(fixedAllocator.Deallocate(p[i]));
     }
-}*/
+}
+
+TEST_P(FixedAllocatorTest, Allocate8Chunks_RandomDealloc)
+{
+    std::size_t size = (PAGE_SIZE / blockSize)*8;
+    void * p[size];
+    for(unsigned int i = 0; i < size; ++i)
+    {
+        p[i] = fixedAllocator.Allocate();
+        EXPECT_TRUE(p[i]);
+    }
+
+    int index = rand() % size;
+
+    EXPECT_TRUE(fixedAllocator.Deallocate(p[index]));
+    p[index] = nullptr;
+    p[index] = fixedAllocator.Allocate();
+    EXPECT_TRUE(p[index]);
+
+}
+
+TEST_P(FixedAllocatorTest, Allocate8Chunks_OneEmptyChunk)
+{
+    std::size_t size = (PAGE_SIZE / blockSize)*8;
+    void * p[size];
+    for(unsigned int i = 0; i < size; ++i)
+    {
+        p[i] = fixedAllocator.Allocate();
+        EXPECT_TRUE(p[i]);
+    }
+
+    unsigned int oneChunk = size/8;
+    for (unsigned int i = 0; i < oneChunk  ; ++i)
+    {
+        EXPECT_TRUE(fixedAllocator.Deallocate(p[i]));
+    }
+
+    int index = rand() % oneChunk;
+    p[index] = nullptr;
+    p[index] = fixedAllocator.Allocate();
+    EXPECT_TRUE(p[index]);
+}
+
 
 INSTANTIATE_TEST_CASE_P(InstantiationName,
                         FixedAllocatorTest,
-                        ::testing::Values(4,2));
+                        ::testing::Values(4,2,5,32));

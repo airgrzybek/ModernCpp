@@ -76,7 +76,7 @@ TEST_P(ChunkTestParam, Deallocate_Death)
 #ifdef WINDOWS
     ASSERT_DEATH(chunk.Deallocate(p,blockSize),"Assertion failed: .*Chunk.cpp");
 #else
-    ASSERT_DEATH(chunk.Deallocate(p,blockSize),".*Chunk.cpp:119.*");
+    ASSERT_DEATH(chunk.Deallocate(p,blockSize),".*Chunk.cpp:*");
 #endif
 }
 
@@ -99,6 +99,25 @@ TEST_P(ChunkTestParam,overflow)
     EXPECT_EQ(255, chunk.firstAvailableBlock);
 }
 
+TEST_P(ChunkTestParam,allocateAllBlocks)
+{
+    unsigned char * p[MAX_U8];
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        p[i] = static_cast<unsigned char *>(chunk.Allocate(blockSize));
+    }
+
+    EXPECT_FALSE(chunk.HasAvailable(MAX_U8));
+
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        chunk.Deallocate(p[i],blockSize);
+    }
+    EXPECT_TRUE(chunk.HasAvailable(MAX_U8));
+    EXPECT_EQ(255, chunk.blocksAvailable);
+    EXPECT_EQ(254, chunk.firstAvailableBlock);
+}
+
 TEST_P(ChunkTestParam, Release)
 {
     chunk.Release();
@@ -110,6 +129,55 @@ TEST_P(ChunkTestParam, Release)
 TEST_P(ChunkTestParam, HasAvailible)
 {
     EXPECT_TRUE(chunk.HasAvailable(MAX_U8));
+}
+
+TEST_P(ChunkTestParam, isBlockAvailable_False)
+{
+    unsigned char * p[MAX_U8];
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        p[i] = static_cast<unsigned char *>(chunk.Allocate(blockSize));
+    }
+
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        EXPECT_FALSE(chunk.IsBlockAvailable(p[i],MAX_U8,blockSize));
+    }
+}
+
+TEST_P(ChunkTestParam, isBlockAvailable_TRUE)
+{
+    unsigned char * p[MAX_U8];
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        p[i] = static_cast<unsigned char *>(chunk.Allocate(blockSize));
+        EXPECT_TRUE(p[i]);
+    }
+
+    for(unsigned char i = 129; i < MAX_U8; ++i)
+    {
+        chunk.Deallocate(p[i],blockSize);
+    }
+
+    for(unsigned char i = 129; i < MAX_U8; ++i)
+    {
+        EXPECT_TRUE(chunk.IsBlockAvailable(p[i],MAX_U8,blockSize));
+    }
+}
+
+TEST_P(ChunkTestParam, reset)
+{
+    unsigned char * p[MAX_U8];
+    for(unsigned char i = 0; i < MAX_U8; ++i)
+    {
+        p[i] = static_cast<unsigned char *>(chunk.Allocate(blockSize));
+        EXPECT_TRUE(p[i]);
+    }
+
+    EXPECT_EQ(0,chunk.blocksAvailable);
+    chunk.Reset(blockSize,MAX_U8);
+    EXPECT_EQ(MAX_U8,chunk.blocksAvailable);
+    EXPECT_EQ(0, chunk.firstAvailableBlock);
 }
 
 INSTANTIATE_TEST_CASE_P(InstantiationName,
