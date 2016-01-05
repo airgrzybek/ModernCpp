@@ -70,7 +70,7 @@ TEST_P(ChunkTestParam, Deallocate)
     EXPECT_EQ(0,chunk.firstAvailableBlock);
 }
 
-/*TEST_P(ChunkTestParam, Deallocate_Death)
+TEST_P(ChunkTestParam, Deallocate_Death)
 {
     void * p = 0;
 #ifdef WINDOWS
@@ -78,7 +78,7 @@ TEST_P(ChunkTestParam, Deallocate)
 #else
     ASSERT_DEATH(chunk.Deallocate(p,blockSize),".*Chunk.cpp:*");
 #endif
-}*/
+}
 
 TEST_P(ChunkTestParam, HasBlock)
 {

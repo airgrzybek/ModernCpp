@@ -24,6 +24,8 @@ public:
     FixedAllocator(const FixedAllocator&) = delete;
     FixedAllocator & operator = (const FixedAllocator &) = delete;
 
+    void Initialize(std::size_t blockSize, std::size_t pageSize);
+
     void* Allocate();
     bool Deallocate(void * p);
 

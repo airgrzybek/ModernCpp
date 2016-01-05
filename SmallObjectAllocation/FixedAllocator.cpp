@@ -33,6 +33,11 @@ FixedAllocator::FixedAllocator(std::size_t blockSize, std::size_t pageSize) :
                 deallocChunk(0),
                 emptyChunk(0)
 {
+    Initialize(blockSize,pageSize);
+}
+
+void FixedAllocator::Initialize(std::size_t blockSize, std::size_t pageSize)
+{
     assert(blockSize > 0);
     assert(pageSize >= blockSize);
 
