@@ -9,7 +9,19 @@
 #define SMALLOBJECTALLOCATION_SMALLOBJECT_H_
 
 
+namespace Memory
+{
 
+class SmallObject
+{
+public:
+    static void * operator new(std::size_t size);
+    static void operator delete(void * p, std::size_t size);
+
+    virtual ~SmallObject();
+};
+
+}// Memory
 
 
 #endif /* SMALLOBJECTALLOCATION_SMALLOBJECT_H_ */
