@@ -8,6 +8,8 @@
 #ifndef SMALLOBJECTALLOCATION_SMALLOBJECT_H_
 #define SMALLOBJECTALLOCATION_SMALLOBJECT_H_
 
+#include <cstdlib>
+#include "SmallObjectAllocator.h"
 
 namespace Memory
 {
@@ -15,9 +17,11 @@ namespace Memory
 class SmallObject
 {
 public:
+    // Instance of SmallObjectAllocator
+    typedef AllocatorSingleton<> Allocator;
+
     static void * operator new(std::size_t size);
     static void operator delete(void * p, std::size_t size);
-
     virtual ~SmallObject();
 };
 

@@ -14,6 +14,8 @@ namespace Memory
 SmallObjectAllocator::SmallObjectAllocator(std::size_t chunkSize, std::size_t maxObjectSize) :
         maxObjectSize(maxObjectSize)
 {
+    assert(maxObjectSize > 0);
+    assert(chunkSize > 0);
     pool.resize(maxObjectSize);
 
     for(std::size_t i = 0; i < maxObjectSize; ++i)
@@ -39,7 +41,7 @@ void * SmallObjectAllocator::Allocate(std::size_t numbytes)
     }
     else
     {
-        return pool[numbytes]->Allocate();
+        return pool[numbytes-1]->Allocate();
     }
 }
 
@@ -52,7 +54,7 @@ void SmallObjectAllocator::Deallocate(void * p, std::size_t size)
     }
     else
     {
-        bool result = pool[size]->Deallocate(p);
+        bool result = pool[size-1]->Deallocate(p);
         assert(result);
     }
 }

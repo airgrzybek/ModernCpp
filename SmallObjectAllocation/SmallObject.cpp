@@ -6,13 +6,10 @@
  */
 
 #include "SmallOBject.h"
-#include "SmallObjectAllocator.h"
-#include <SingletonHolder.h>
+
 
 namespace Memory
 {
-
-typedef SingletonHolder<SmallObjectAllocator> Allocator;
 
 void * SmallObject::operator new(std::size_t size)
 {
