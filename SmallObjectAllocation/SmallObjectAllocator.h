@@ -15,7 +15,7 @@ namespace Memory
 {
 
 const std::size_t MAX_SMALL_BOJECT_SIZE = 64;
-const std::size_t CHUNK_SIZE = 255;
+const std::size_t CHUNK_SIZE = 4096;
 
 class SmallObjectAllocator
 {
