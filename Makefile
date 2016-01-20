@@ -18,7 +18,7 @@ OBJS=$(SRC:.cpp=.o)
 TARGET=demo.exe
 
 CC=g++
-CXXFLAGS=-O2 -g -Wall -fmessage-length=0 $(INC) -std=gnu++11 -Werror
+CXXFLAGS=-O3 -Wall -fmessage-length=0 $(INC) -std=gnu++11 -Werror -DWINDOWS
 LDFLAGS=
 
 all: $(OBJS)
