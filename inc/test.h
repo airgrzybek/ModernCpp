@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include<fstream>
 #include <iostream>
+#include <ctime>
+#include <ratio>
 #include <chrono>
 
 namespace Test
@@ -77,27 +79,29 @@ public:
 private:
     void Allocate()
     {
+        using namespace std::chrono;
         file << "Allocation" << std::endl;
 
-        if(Clock::is_steady)
+        if(steady_clock::is_steady)
             std::cout << "is steady" << std::endl;
 
         for(std::size_t i = 0; i < count ; ++i)
         {
-            auto start = Clock::now();
+            steady_clock::time_point start = steady_clock::now();
 
             elements[i] = new T;
 
-            auto finish = Clock::now();
+            steady_clock::time_point finish = steady_clock::now();
+            milliseconds time_span = duration_cast<milliseconds>(finish - start);
 
-            std::cout << i << "," << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
+            std::cout << i << "," << time_span.count() << " pointer="<< elements[i] << std::endl;
         }
     }
 
     void Deallocate()
     {
         file << "Deallocation" << std::endl;
-
+        system("PAUSE");
         for(std::size_t i = 0; i < count ; ++i)
         {
             clock_t time = clock();
