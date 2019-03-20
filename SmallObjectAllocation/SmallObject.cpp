@@ -5,7 +5,7 @@
  *      Author: xxpowdaw
  */
 
-#include "SmallOBject.h"
+#include "SmallObject.h"
 
 
 namespace Memory
